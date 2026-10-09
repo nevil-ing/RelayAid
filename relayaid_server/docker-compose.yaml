@@ -1,0 +1,30 @@
+services:
+  # Development services
+  postgres:
+    image: ghcr.io/serverpod/postgres:16
+    ports:
+      - "8090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: relayaid
+      POSTGRES_PASSWORD: "${RELAYAID_DEV_DB_PASSWORD:?Set RELAYAID_DEV_DB_PASSWORD}"
+    volumes:
+      - relayaid_data:/var/lib/postgresql/data
+
+
+  # Test services
+  postgres_test:
+    image: ghcr.io/serverpod/postgres:16
+    ports:
+      - "9090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: relayaid_test
+      POSTGRES_PASSWORD: "${RELAYAID_TEST_DB_PASSWORD:?Set RELAYAID_TEST_DB_PASSWORD}"
+    volumes:
+      - relayaid_test_data:/var/lib/postgresql/data
+
+
+volumes:
+  relayaid_data:
+  relayaid_test_data:

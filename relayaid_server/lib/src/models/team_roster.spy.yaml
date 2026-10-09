@@ -1,0 +1,5 @@
+class: TeamRoster
+fields:
+  team: Team
+  responders: List<OrganizationMember>
+  activeAssignments: int

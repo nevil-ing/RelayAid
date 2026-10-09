@@ -1,0 +1,14 @@
+class: IncidentAttachment
+table: relay_incident_attachment
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  incidentId: UuidValue
+  organizationId: UuidValue
+  uploadedBy: UuidValue
+  contentType: String
+  byteLength: int
+  storagePath: String?, scope=serverOnly
+  uploadedAt: DateTime, default=now
+indexes:
+  relay_attachment_incident_uploaded:
+    fields: incidentId, uploadedAt

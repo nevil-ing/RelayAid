@@ -1,0 +1,7 @@
+class: Organization
+table: relay_organization
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  name: String
+  createdBy: UuidValue
+  createdAt: DateTime, default=now

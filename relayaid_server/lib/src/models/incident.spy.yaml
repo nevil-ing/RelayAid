@@ -1,0 +1,25 @@
+class: Incident
+table: relay_incident
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  organizationId: UuidValue
+  type: IncidentType
+  severity: IncidentSeverity
+  status: IncidentStatus
+  title: String
+  description: String
+  latitude: double?
+  longitude: double?
+  peopleAffected: int
+  reportedBy: UuidValue
+  reportedAt: DateTime, default=now
+  updatedAt: DateTime, default=now
+  escalationDueAt: DateTime?
+  escalatedAt: DateTime?
+indexes:
+  relay_incident_organization_updated:
+    fields: organizationId, updatedAt
+  relay_incident_organization_status:
+    fields: organizationId, status
+  relay_incident_escalation_due:
+    fields: severity, status, escalationDueAt

@@ -1,0 +1,40 @@
+emailIdp:
+  - login:
+  - startRegistration:
+  - verifyRegistrationCode:
+  - finishRegistration:
+  - startPasswordReset:
+  - verifyPasswordResetCode:
+  - finishPasswordReset:
+  - hasAccount:
+jwtRefresh:
+  - refreshAccessToken:
+assignment:
+  - assign:
+  - watch:
+  - detail:
+  - accept:
+  - respond:
+  - resolve:
+incident:
+  - create:
+  - list:
+  - detail:
+  - transition:
+incidentFeed:
+  - watch:
+media:
+  - beginUpload:
+  - completeUpload:
+  - list:
+  - read:
+organization:
+  - myContext:
+  - contextFor:
+  - create:
+  - addMember:
+  - listMembers:
+  - createTeam:
+  - listTeams:
+team:
+  - addResponder:

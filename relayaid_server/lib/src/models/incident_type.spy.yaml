@@ -1,0 +1,11 @@
+enum: IncidentType
+serialized: byName
+values:
+  - flooding
+  - fire
+  - medical
+  - infrastructure
+  - supplyShortage
+  - displacement
+  - security
+  - other

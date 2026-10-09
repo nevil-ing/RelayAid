@@ -1,0 +1,3 @@
+exception: AttachmentValidationException
+fields:
+  message: String

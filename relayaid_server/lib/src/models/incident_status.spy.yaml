@@ -1,0 +1,9 @@
+enum: IncidentStatus
+serialized: byName
+values:
+  - reported
+  - acknowledged
+  - assigned
+  - responding
+  - resolved
+  - cancelled

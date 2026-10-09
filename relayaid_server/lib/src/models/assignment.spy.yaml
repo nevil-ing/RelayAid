@@ -1,0 +1,23 @@
+class: Assignment
+table: relay_assignment
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  organizationId: UuidValue
+  incidentId: UuidValue
+  teamId: UuidValue
+  designatedResponderId: UuidValue?
+  assignedBy: UuidValue
+  acceptedBy: UuidValue?
+  status: AssignmentStatus
+  createdAt: DateTime, default=now
+  updatedAt: DateTime, default=now
+  acceptedAt: DateTime?
+  respondingAt: DateTime?
+  resolvedAt: DateTime?
+  cancelledAt: DateTime?
+indexes:
+  assignment_incident_unique:
+    fields: incidentId
+    unique: true
+  assignment_organization_team:
+    fields: organizationId, teamId

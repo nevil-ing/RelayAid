@@ -1,0 +1,8 @@
+class: IncidentFeed
+fields:
+  organizationId: UuidValue
+  incidents: List<Incident>
+  activity: List<IncidentActivity>
+  generatedAt: DateTime
+  hasMoreIncidents: bool
+  teams: List<TeamRoster>?

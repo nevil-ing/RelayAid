@@ -1,0 +1,8 @@
+enum: AssignmentStatus
+serialized: byName
+values:
+  - pending
+  - accepted
+  - responding
+  - resolved
+  - cancelled

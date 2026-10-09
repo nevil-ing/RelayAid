@@ -1,0 +1,5 @@
+class: AssignmentSummary
+fields:
+  assignment: Assignment
+  incident: Incident
+  teamName: String

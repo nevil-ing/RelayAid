@@ -1,0 +1,58 @@
+/* AUTOMATICALLY GENERATED CODE DO NOT MODIFY */
+/*   To generate run: "serverpod generate"    */
+
+// ignore_for_file: implementation_imports
+// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: public_member_api_docs
+// ignore_for_file: type_literal_in_constant_pattern
+// ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
+
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:serverpod/serverpod.dart' as _is;
+
+enum IncidentEventType implements _is.SerializableModel {
+  created,
+  statusChanged,
+  attachmentAdded,
+  assignmentCreated,
+  assignmentAccepted,
+  responseStarted,
+  assignmentResolved,
+  assignmentCancelled,
+  escalated;
+
+  static IncidentEventType fromJson(String name) {
+    switch (name) {
+      case 'created':
+        return IncidentEventType.created;
+      case 'statusChanged':
+        return IncidentEventType.statusChanged;
+      case 'attachmentAdded':
+        return IncidentEventType.attachmentAdded;
+      case 'assignmentCreated':
+        return IncidentEventType.assignmentCreated;
+      case 'assignmentAccepted':
+        return IncidentEventType.assignmentAccepted;
+      case 'responseStarted':
+        return IncidentEventType.responseStarted;
+      case 'assignmentResolved':
+        return IncidentEventType.assignmentResolved;
+      case 'assignmentCancelled':
+        return IncidentEventType.assignmentCancelled;
+      case 'escalated':
+        return IncidentEventType.escalated;
+      default:
+        throw ArgumentError(
+          'Value "$name" cannot be converted to "IncidentEventType"',
+        );
+    }
+  }
+
+  @override
+  String toJson() => name;
+
+  @override
+  String toString() => name;
+}

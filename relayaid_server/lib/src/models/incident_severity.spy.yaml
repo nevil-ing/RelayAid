@@ -1,0 +1,7 @@
+enum: IncidentSeverity
+serialized: byName
+values:
+  - low
+  - moderate
+  - high
+  - critical

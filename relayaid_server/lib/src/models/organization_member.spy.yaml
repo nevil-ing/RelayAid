@@ -1,0 +1,14 @@
+class: OrganizationMember
+table: relay_organization_member
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  organizationId: UuidValue
+  authUserId: UuidValue
+  role: MemberRole
+  joinedAt: DateTime, default=now
+indexes:
+  relay_member_user_unique:
+    fields: authUserId
+    unique: true
+  relay_member_organization:
+    fields: organizationId

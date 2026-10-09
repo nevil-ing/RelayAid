@@ -1,0 +1,4 @@
+class: IncidentActivity
+fields:
+  event: IncidentEvent
+  incidentTitle: String

@@ -1,0 +1,11 @@
+class: Team
+table: relay_team
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  organizationId: UuidValue
+  name: String
+  createdAt: DateTime, default=now
+indexes:
+  relay_team_org_name_unique:
+    fields: organizationId, name
+    unique: true

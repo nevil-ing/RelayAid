@@ -1,0 +1,12 @@
+enum: IncidentEventType
+serialized: byName
+values:
+  - created
+  - statusChanged
+  - attachmentAdded
+  - assignmentCreated
+  - assignmentAccepted
+  - responseStarted
+  - assignmentResolved
+  - assignmentCancelled
+  - escalated

@@ -1,0 +1,11 @@
+class: TeamMember
+table: relay_team_member
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  teamId: UuidValue
+  authUserId: UuidValue
+  joinedAt: DateTime, default=now
+indexes:
+  relay_team_member_unique:
+    fields: teamId, authUserId
+    unique: true

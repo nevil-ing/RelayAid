@@ -1,0 +1,16 @@
+class: IncidentEvent
+table: relay_incident_event
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  incidentId: UuidValue
+  organizationId: UuidValue
+  eventType: IncidentEventType
+  actorId: UuidValue?
+  assignmentId: UuidValue?
+  fromStatus: IncidentStatus?
+  toStatus: IncidentStatus?
+  note: String?
+  createdAt: DateTime, default=now
+indexes:
+  relay_incident_event_incident_created:
+    fields: incidentId, createdAt

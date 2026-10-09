@@ -1,0 +1,61 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, 'chore/**']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: '4.0.1'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+
+      # The test config sets `database.dataPath`, so the tests run against an
+      # embedded PostgreSQL that Serverpod starts itself. No Docker needed.
+      # The binaries are downloaded once and cached here between runs. The
+      # bundle changes with the Serverpod version, so the version is in the key.
+      - name: Cache embedded PostgreSQL binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/serverpod/pg-binaries
+          key: serverpod-pg-binaries-${{runner.os}}-${{env.VERSION}}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Install Serverpod CLI
+        run: dart pub global activate serverpod_cli "$VERSION"
+
+      - name: Run Serverpod generator
+        working-directory: relayaid_server
+        run: dart pub global run serverpod_cli:serverpod_cli generate
+
+      - name: Check generated code is committed
+        run: git diff --exit-code -- relayaid_client/lib relayaid_server/lib/src/generated relayaid_server/test/integration/test_tools
+
+      - name: Create ephemeral test credentials
+        run: |
+          echo "SERVERPOD_PASSWORD_database=$(openssl rand -hex 24)" >> "$GITHUB_ENV"
+          echo "SERVERPOD_PASSWORD_emailSecretHashPepper=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+          echo "SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey=$(openssl rand -hex 64)" >> "$GITHUB_ENV"
+          echo "SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+
+      - name: Run Flutter tests
+        working-directory: relayaid_flutter
+        run: flutter test
+
+      - name: Run Serverpod tests
+        working-directory: relayaid_server
+        run: dart test
+
+      - name: Build production web client
+        working-directory: relayaid_flutter
+        run: flutter build web --release --dart-define=SERVER_URL=https://relayaid.api.serverpod.space/

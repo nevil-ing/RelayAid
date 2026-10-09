@@ -1,0 +1,6 @@
+class: IncidentDetail
+fields:
+  incident: Incident
+  timeline: List<IncidentEvent>
+  assignment: Assignment?
+  assignmentTeamName: String?

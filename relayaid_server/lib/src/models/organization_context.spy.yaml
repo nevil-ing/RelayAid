@@ -1,0 +1,4 @@
+class: OrganizationContext
+fields:
+  organization: Organization
+  membership: OrganizationMember

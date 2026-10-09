@@ -1,0 +1,7 @@
+enum: MemberRole
+serialized: byName
+values:
+  - fieldWorker
+  - responder
+  - coordinator
+  - administrator

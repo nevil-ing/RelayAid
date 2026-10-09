@@ -1,0 +1,7 @@
+class: AssignmentFeed
+fields:
+  organizationId: UuidValue
+  authUserId: UuidValue
+  assignments: List<AssignmentSummary>
+  generatedAt: DateTime
+  hasMoreAssignments: bool
