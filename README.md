@@ -192,6 +192,6 @@ Features use `domain/`, `data/`, `application/`, `presentation/` where justified
 
 ## Remaining acceptance and roadmap
 
-Before submission: update to the matching TestFlight beta, perform the phone/browser rehearsal twice, capture genuine screenshots and a video under three minutes, then attach verified links to the competition entry. Public source and MIT are authorized; current-source secret scanning is clean, but publication remains gated on approved cleanup of historical development credentials and internal guides. Do not expose the existing Git history before that cleanup.
+Before submission: update to the matching TestFlight beta, perform the phone/browser rehearsal twice, capture genuine screenshots and a video under three minutes, then attach verified links to the competition entry. The public source is published under MIT with a fresh, clean history; source and history secret scans passed. The original repository/history is preserved privately. Internal agent guides and planning/design documents are not included in this public repository.
 
 Later, beyond the hackathon core: invitations, push notifications, reassignment, durable offline web storage and a production map provider. No competition outcome is guaranteed by passing tests.
