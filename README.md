@@ -16,14 +16,15 @@ This is a real local-first workflow, not a mocked sync indicator. Native SQLite 
 
 ## Release status
 
-Target beta: **0.2.0 (2)**. Verification from a fresh committed checkout on 9 October 2026 passed **94 Flutter tests**, **74 Serverpod tests**, generation checks, formatting and both static analyzers. The matching backend and Flutter web app were deployed successfully to Cloud on 9 October; both additive migrations applied and the served web runtime matches the verified build. The signed iOS beta uploaded and processed successfully; the owner completed export compliance and the existing internal `testerr` group shows **Testing** for build 2. Previously distributed `0.1.0 (1)` does not include the full command-center, response, escalation or reporting polish.
+Updated beta: **0.2.1 (3)**. On 11 October 2026 the reporting-usability update passes **114 Flutter tests**, **74 Serverpod tests**, generation checks, 235-file formatting and all static analyzers. It makes reporting, Profile and saved reports available to administrators/coordinators, improves connection recovery and explains real-account member setup. No database migration or generated API change is required. Release builds and distribution are being prepared; automated checks alone do not establish TestFlight availability.
 
-Physical-device acceptance is scheduled for **10 October**. Automated SQLite/file reopen tests are not a substitute for the phone’s camera, GPS, kill/relaunch and Cloud/browser rehearsal. A genuine demo video will be linked after that rehearsal; no recording or competition submission is claimed yet.
+The previous **0.2.0 (2)** beta and matching Cloud/web release were distributed on 9 October. The owner's subsequent phone recording exposed a missing administrator reporting action and unclear offline/member guidance; the update addresses those usability defects. Physical-device acceptance remains pending. Automated SQLite/file reopen tests are not a substitute for the phone’s camera, GPS, kill/relaunch and Cloud/browser rehearsal. A genuine demo video will be linked after that rehearsal; no completed showcase or competition submission is claimed yet.
 
 ## What works
 
 - Three-step reporting: Incident → Location / evidence → Review. Foreground GPS is requested only on **Use current location**; permission/disabled/timeout states offer recovery or manual coordinates.
-- Native offline reports and photos survive restarts. A visible Sync center explains pending, syncing, synchronized and retryable failed states.
+- Every organization role can report. Administrator/coordinator phones have a persistent **Report incident** action; desktop workspaces have the same action in the toolbar.
+- Native offline reports and photos survive restarts. **Saved reports & sync** includes synchronized reports as well as pending ones; **Check connection** and an app-resume check recover missed network changes. Network availability is not a backend-health guarantee.
 - Organization-scoped web Overview, Incidents, Map and Activity receive Serverpod WebSocket snapshots without incident polling or manual refresh.
 - Coordinators maintain responder rosters and assign teams, optionally designating an eligible responder. Workload counts represent active assignments, not invented online presence.
 - A foreground responder inbox receives assignments live. Acceptance is first-claim-wins; the accepting responder starts responding and resolves with a required outcome note.
@@ -85,11 +86,17 @@ flutter run --dart-define=SERVER_URL=http://localhost:8080/
 
 Use a reachable development host instead of `localhost` on a physical phone. Release builds reject insecure or loopback server addresses. Local email sign-up uses Serverpod’s development verification flow; Cloud email authentication must be checked separately with real accounts.
 
+### Report your first incident
+
+After signing in and joining/creating a workspace, tap **Report incident**. Choose the type, severity and description → **Continue** → use GPS or enter coordinates, add a photo → **Continue** → review → save/report. With no connection, the native app confirms a local save; do not wait for a photo upload. An administrator can report too, without adding another account first.
+
+To find it again on an administrator/coordinator phone, open the menu → **Saved reports & sync**, or tap the connection indicator. Field-worker Home/Incidents also show local reports. Restore Wi-Fi/mobile data, return to the app or tap **Check connection**; report metadata and photos synchronize separately. The command-center incident list shows server reports, so an unsynchronized offline report belongs in the device's saved reports until it reaches the backend.
+
 ### Add members and Team Alpha
 
 1. Administrator signs in and creates a dedicated test organization.
-2. Each additional person signs up/signs in, then copies their **User ID** from Organization Setup or Profile. Use the actual authentication UUID, not an incident ID, team ID or invented value.
-3. Administrator opens **Settings → Members**, enters that ID and chooses **Field worker**, **Responder** or **Coordinator**. New members tap **I have been added — check access**.
+2. Each additional person signs up/signs in, stays on **Join a workspace**, and copies their **User ID**. They must not create a separate organization. Use their actual authentication UUID, not the administrator's own ID, an incident/team ID or an invented value.
+3. While connected, the administrator opens **Settings → Members**, pastes that ID and chooses **Field worker**, **Responder** or **Coordinator**. New members tap **I have been added — check access**. Profile and Settings also provide a copyable ID for existing members.
 4. Coordinator opens **Teams**, creates **Team Alpha**, and adds the organization member with Responder role to its roster.
 5. Keep coordinator Overview and responder Home open. Assign the synchronized incident, then accept → start responding → enter an outcome → resolve. Both clients update live.
 
@@ -144,7 +151,7 @@ The release includes additive migrations `20261005182107801-assignment-workflow`
 
 ```sh
 cd relayaid_flutter
-flutter build ipa --release --build-name=0.2.0 --build-number=2 \
+flutter build ipa --release --build-name=0.2.1 --build-number=3 \
   --dart-define=SERVER_URL=https://relayaid.api.serverpod.space/
 ```
 

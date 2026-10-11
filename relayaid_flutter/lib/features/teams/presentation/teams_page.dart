@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:relayaid_client/relayaid_client.dart';
 
 import '../../../app/router/app_router.dart';
+import '../../../core/connectivity/connectivity_provider.dart';
 import '../../../design_system/tokens/app_spacing.dart';
+import '../../../shared/presentation/connection_help.dart';
 import '../../../shared/presentation/live_feed_status_view.dart';
 import '../../assignments/domain/assignment_labels.dart';
 import '../../command_center/application/command_center_controller.dart';
@@ -37,6 +39,7 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
   Widget build(BuildContext context) {
     final feed = ref.watch(commandCenterControllerProvider);
     final teams = ref.watch(teamControllerProvider);
+    final connection = ref.watch(connectivityControllerProvider);
     final enabled = feed.status == LiveFeedStatus.live && !teams.busy;
     final theme = Theme.of(context);
     return ListView(
@@ -48,6 +51,13 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
         ),
         const SizedBox(height: AppSpacing.space8),
         LiveFeedStatusView(status: feed.status, onReconnect: feed.reconnect),
+        if (!connection.isOnline) ...[
+          const SizedBox(height: AppSpacing.space16),
+          const ConnectionHelp(),
+          const Text(
+            'Connect to load members or change teams. Offline team changes are not queued.',
+          ),
+        ],
         const SizedBox(height: AppSpacing.space24),
         const Text(
           'Add organization responders to a team. Active response counts update live; teams may handle more than one incident.',
@@ -64,7 +74,7 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
           ),
         ],
         const SizedBox(height: AppSpacing.space24),
-        if (feed.feed == null || teams.loading)
+        if (feed.status == LiveFeedStatus.connecting || teams.loading)
           const LinearProgressIndicator(
             semanticsLabel: 'Loading teams and responders',
           ),

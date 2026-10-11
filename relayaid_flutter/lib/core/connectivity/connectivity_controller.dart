@@ -38,30 +38,57 @@ class ConnectivityController extends ChangeNotifier {
   bool _syncing = false;
   StreamSubscription<List<ConnectivityResult>>? _subscription;
   bool _started = false;
+  bool _checking = false;
+  bool _disposed = false;
+  int _request = 0;
 
   ConnectivityStatus get status =>
       _syncing ? ConnectivityStatus.syncing : _baseStatus;
 
   bool get isOnline => _baseStatus == ConnectivityStatus.connected;
+  bool get isChecking => _checking;
 
   Future<void> start() async {
     if (_started) return;
     _started = true;
-    _subscription = _source.changes.listen(_applyResults);
+    _subscription = _source.changes.listen(
+      (results) {
+        _request++;
+        _applyResults(results);
+      },
+      onError: (Object _) {
+        _request++;
+        _setBaseStatus(ConnectivityStatus.unavailable);
+      },
+    );
+    await refresh();
+  }
+
+  /// Re-read the platform network state after a manual retry or app resume.
+  /// A network interface is not proof that the backend is reachable.
+  Future<void> refresh() async {
+    if (_disposed) return;
+    final request = ++_request;
+    _checking = true;
+    notifyListeners();
     try {
-      _applyResults(await _source.check());
+      final results = await _source.check();
+      if (!_disposed && request == _request) _applyResults(results);
     } catch (_) {
-      _setBaseStatus(ConnectivityStatus.unavailable);
+      if (!_disposed && request == _request) {
+        _setBaseStatus(ConnectivityStatus.unavailable);
+      }
     }
   }
 
   void setSyncing(bool syncing) {
-    if (_syncing == syncing) return;
+    if (_disposed || _syncing == syncing) return;
     _syncing = syncing;
     notifyListeners();
   }
 
   void setStatusForTest(ConnectivityStatus next) {
+    _request++;
     _syncing = next == ConnectivityStatus.syncing;
     _setBaseStatus(_syncing ? ConnectivityStatus.connected : next);
   }
@@ -76,13 +103,17 @@ class ConnectivityController extends ChangeNotifier {
   }
 
   void _setBaseStatus(ConnectivityStatus next) {
-    if (_baseStatus == next) return;
+    if (_disposed) return;
+    final changed = _baseStatus != next || _checking;
+    _checking = false;
     _baseStatus = next;
-    notifyListeners();
+    if (changed) notifyListeners();
   }
 
   @override
   void dispose() {
+    _disposed = true;
+    _request++;
     unawaited(_subscription?.cancel());
     super.dispose();
   }
