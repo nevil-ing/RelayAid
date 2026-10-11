@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/connectivity/connectivity_provider.dart';
+import '../../design_system/components/app_button.dart';
 import '../../design_system/tokens/app_breakpoints.dart';
 import '../../design_system/tokens/app_spacing.dart';
 import '../../design_system/tokens/app_workspace.dart';
@@ -80,7 +81,10 @@ class CommandCenterShell extends ConsumerWidget {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: AppSpacing.space12),
-              child: Center(child: ConnectivityIndicator(status: connectivity)),
+              child: TextButton(
+                onPressed: () => context.go(AppRoutes.syncCenter),
+                child: ConnectivityIndicator(status: connectivity),
+              ),
             ),
           ],
         ),
@@ -104,12 +108,44 @@ class CommandCenterShell extends ConsumerWidget {
                         context.go(destination.route);
                       },
                     ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.sync_outlined),
+                    title: const Text('Saved reports & sync'),
+                    selected: currentPath == AppRoutes.syncCenter,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      context.go(AppRoutes.syncCenter);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.person_outline),
+                    title: const Text('Profile'),
+                    selected: currentPath == AppRoutes.profile,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      context.go(AppRoutes.profile);
+                    },
+                  ),
                 ],
               ),
             ),
           ),
         ),
         body: child,
+        bottomNavigationBar: currentPath == AppRoutes.report
+            ? null
+            : SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.space16),
+                  child: AppButton(
+                    label: 'Report incident',
+                    icon: Icons.add,
+                    onPressed: () => context.go(AppRoutes.report),
+                  ),
+                ),
+              ),
       );
     }
     final isExpanded = width >= AppBreakpoints.expandedNavigation;
@@ -170,7 +206,28 @@ class CommandCenterShell extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(width: AppSpacing.space16),
-                      ConnectivityIndicator(status: connectivity),
+                      if (currentPath != AppRoutes.report) ...[
+                        AppButton(
+                          label: 'Report incident',
+                          icon: Icons.add,
+                          onPressed: () => context.go(AppRoutes.report),
+                        ),
+                        const SizedBox(width: AppSpacing.space16),
+                      ],
+                      TextButton(
+                        onPressed: () => context.go(AppRoutes.syncCenter),
+                        child: ConnectivityIndicator(status: connectivity),
+                      ),
+                      IconButton(
+                        tooltip: 'Saved reports & sync',
+                        icon: const Icon(Icons.sync_outlined),
+                        onPressed: () => context.go(AppRoutes.syncCenter),
+                      ),
+                      IconButton(
+                        tooltip: 'Profile',
+                        icon: const Icon(Icons.person_outline),
+                        onPressed: () => context.go(AppRoutes.profile),
+                      ),
                       const SizedBox(width: AppSpacing.space16),
                       IconButton(
                         tooltip: 'Sign out',

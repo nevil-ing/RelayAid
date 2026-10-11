@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:relayaid_client/relayaid_client.dart';
 
@@ -14,6 +16,8 @@ class TeamController extends ChangeNotifier {
     required this.connectivity,
   }) {
     access.addListener(_accessChanged);
+    _online = connectivity.isOnline;
+    connectivity.addListener(_connectionChanged);
   }
   final TeamRepository repository;
   final AccessController access;
@@ -24,6 +28,7 @@ class TeamController extends ChangeNotifier {
   bool _busy = false;
   bool _loading = false;
   bool _disposed = false;
+  bool _online = false;
   int _request = 0;
 
   List<OrganizationMember> get responders =>
@@ -47,9 +52,22 @@ class TeamController extends ChangeNotifier {
     if (!_disposed) notifyListeners();
   }
 
+  void _connectionChanged() {
+    if (_online == connectivity.isOnline) return;
+    _online = connectivity.isOnline;
+    if (_online) {
+      unawaited(loadMembers());
+    } else {
+      _request++;
+      _loading = false;
+      _error = null;
+      if (!_disposed) notifyListeners();
+    }
+  }
+
   Future<void> loadMembers() async {
     _accessChanged();
-    if (_scope == null) return;
+    if (_scope == null || !connectivity.isOnline || _disposed) return;
     final request = ++_request;
     final scope = _scope;
     _loading = true;
@@ -124,6 +142,7 @@ class TeamController extends ChangeNotifier {
     _disposed = true;
     _request++;
     access.removeListener(_accessChanged);
+    connectivity.removeListener(_connectionChanged);
     super.dispose();
   }
 }

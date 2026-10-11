@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import '../../../design_system/components/app_button.dart';
 import '../../../design_system/components/app_state_view.dart';
 import '../../../design_system/components/app_surface_card.dart';
 import '../../../design_system/tokens/app_spacing.dart';
+import '../../../shared/presentation/connection_help.dart';
 import '../../incidents/application/incident_controller.dart';
 import '../../incidents/domain/incident_sync_state.dart';
 import '../../incidents/presentation/incident_badges.dart';
@@ -32,7 +34,8 @@ class _SyncCenterPageState extends ConsumerState<SyncCenterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final connectivity = ref.watch(connectivityControllerProvider).status;
+    final connection = ref.watch(connectivityControllerProvider);
+    final connectivity = connection.status;
     final controller = ref.watch(incidentControllerProvider);
     final needsSync = controller.incidents
         .where((incident) {
@@ -40,7 +43,7 @@ class _SyncCenterPageState extends ConsumerState<SyncCenterPage> {
           return state != IncidentSyncState.synced;
         })
         .toList(growable: false);
-    final isOffline = connectivity == ConnectivityStatus.offline;
+    final isOffline = !connection.isOnline;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.space24),
@@ -48,7 +51,9 @@ class _SyncCenterPageState extends ConsumerState<SyncCenterPage> {
         Text('Sync center', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: AppSpacing.space8),
         Text(
-          'Reports stay on this device until the connection is available.',
+          kIsWeb
+              ? 'Keep this tab open until reports and photos synchronize. Unsent reports do not survive a reload.'
+              : 'Reports and photos remain on this device after you close the app. They synchronize when a connection is available.',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
@@ -59,16 +64,14 @@ class _SyncCenterPageState extends ConsumerState<SyncCenterPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(switch (connectivity) {
-                ConnectivityStatus.unavailable => 'Checking connection',
+                ConnectivityStatus.unavailable => 'Connection unavailable',
                 ConnectivityStatus.connected => 'Connected',
                 ConnectivityStatus.offline => 'Offline',
                 ConnectivityStatus.syncing => 'Synchronizing reports',
               }, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: AppSpacing.space8),
               Text(
-                isOffline
-                    ? 'New reports are saved locally and will retry when service returns.'
-                    : '${needsSync.length} report${needsSync.length == 1 ? '' : 's'} waiting to synchronize.',
+                '${needsSync.length} report${needsSync.length == 1 ? '' : 's'} waiting to synchronize.',
               ),
               const SizedBox(height: AppSpacing.space16),
               AppButton(
@@ -82,9 +85,13 @@ class _SyncCenterPageState extends ConsumerState<SyncCenterPage> {
             ],
           ),
         ),
+        if (isOffline) ...[
+          const SizedBox(height: AppSpacing.space16),
+          const ConnectionHelp(),
+        ],
         const SizedBox(height: AppSpacing.space24),
         Text(
-          'Reports on this device',
+          kIsWeb ? 'Reports in this tab' : 'Reports on this device',
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: AppSpacing.space12),
@@ -95,29 +102,28 @@ class _SyncCenterPageState extends ConsumerState<SyncCenterPage> {
               semanticsLabel: 'Loading local reports',
             ),
           )
-        else if (needsSync.isEmpty)
+        else if (controller.incidents.isEmpty)
           const AppStateView(
             state: AppViewState.empty,
-            title: 'No reports waiting to sync',
-            description: 'Saved reports remain available in Incidents.',
+            title: 'No saved reports yet',
+            description:
+                'Use Report incident to create your first report, even without a connection.',
           )
         else
           for (final incident in controller.incidents)
-            if (controller.syncStateFor(incident.id) !=
-                IncidentSyncState.synced)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(incident.title),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.space4),
-                  child: IncidentSyncBadge(
-                    state: controller.syncStateFor(incident.id),
-                  ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(incident.title),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.space4),
+                child: IncidentSyncBadge(
+                  state: controller.syncStateFor(incident.id),
                 ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () =>
-                    context.go('${AppRoutes.incidentDetail}?id=${incident.id}'),
               ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () =>
+                  context.go('${AppRoutes.incidentDetail}?id=${incident.id}'),
+            ),
         const SizedBox(height: AppSpacing.space24),
         const AttachmentQueueSection(),
       ],

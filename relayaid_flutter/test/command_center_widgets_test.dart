@@ -327,6 +327,11 @@ void main() {
         30,
       );
       expect(find.byType(NavigationRail), findsNothing);
+      await tester.scrollUntilVisible(
+        find.byKey(ValueKey('incident-row-${commandIncident().id}')),
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.ensureVisible(
         find.byKey(ValueKey('incident-row-${commandIncident().id}')),
       );

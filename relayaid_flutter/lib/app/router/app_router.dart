@@ -55,12 +55,9 @@ GoRouter buildAppRouter(AccessController access) {
     AppRoutes.activity,
     AppRoutes.settings,
   };
-  const fieldPaths = <String>{
-    AppRoutes.home,
-    AppRoutes.report,
-    AppRoutes.profile,
-    AppRoutes.syncCenter,
-  };
+  // Reporting, local queues and identity are shared by every organization
+  // member. Only the field Home is replaced by the coordinator overview.
+  const fieldPaths = <String>{AppRoutes.home};
 
   return GoRouter(
     initialLocation: AppRoutes.home,

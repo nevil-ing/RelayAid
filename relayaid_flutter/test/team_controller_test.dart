@@ -71,4 +71,31 @@ void main() {
     expect(controller.error, isNot(contains('database')));
     expect(controller.busy, isFalse);
   });
+
+  test(
+    'offline responder loading finishes and reconnect automatically loads members',
+    () async {
+      fixture.connectivity.setStatusForTest(ConnectivityStatus.offline);
+      await controller.loadMembers();
+      expect(controller.responders, isEmpty);
+      expect(controller.loading, isFalse);
+      expect(controller.error, isNull);
+      fixture.connectivity.setStatusForTest(ConnectivityStatus.connected);
+      await Future<void>.delayed(Duration.zero);
+      expect(controller.responders, hasLength(1));
+      expect(controller.loading, isFalse);
+    },
+  );
+
+  test('a late responder load cannot refill an offline view', () async {
+    final gate = Completer<List<OrganizationMember>>();
+    repository.memberGate = gate;
+    final loading = controller.loadMembers();
+    fixture.connectivity.setStatusForTest(ConnectivityStatus.offline);
+    gate.complete(assignmentRoster().responders);
+    await loading;
+    expect(controller.responders, isEmpty);
+    expect(controller.loading, isFalse);
+    expect(controller.error, isNull);
+  });
 }

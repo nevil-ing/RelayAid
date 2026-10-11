@@ -67,11 +67,13 @@ class AppStatusBadge extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.space4),
                 ],
-                Text(
-                  label,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelLarge?.copyWith(color: colors.foreground),
+                Flexible(
+                  child: Text(
+                    label,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge?.copyWith(color: colors.foreground),
+                  ),
                 ),
               ],
             ),
