@@ -16,7 +16,9 @@ This is a real local-first workflow, not a mocked sync indicator. Native SQLite 
 
 ## Release status
 
-Updated beta: **0.2.1 (3)**. On 11 October 2026 the reporting-usability update passes **114 Flutter tests**, **74 Serverpod tests**, generation checks, 235-file formatting and all static analyzers. It makes reporting, Profile and saved reports available to administrators/coordinators, improves connection recovery and explains real-account member setup. No database migration or generated API change is required. Release builds and distribution are being prepared; automated checks alone do not establish TestFlight availability.
+Updated beta: **0.2.1 (3)**. On 11 October 2026 the reporting-usability update passes **114 Flutter tests**, **74 Serverpod tests**, generation checks, 235-file formatting and all static analyzers; pull-request and merged-main CI are green. It makes reporting, Profile and saved reports available to administrators/coordinators, improves connection recovery and explains real-account member setup. No database migration or generated API change is required.
+
+The matching Flutter web release is deployed to the existing Cloud project; HTTPS health, runtime API configuration, anonymous API rejection and the exact served web bytes are verified. The distribution-signed iOS beta uploaded and processed successfully for **internal TestFlight testing only**. Apple currently requires the owner's export-compliance declaration before build 3 can become available to testers. Upload/processing are not reported as tester availability.
 
 The previous **0.2.0 (2)** beta and matching Cloud/web release were distributed on 9 October. The owner's subsequent phone recording exposed a missing administrator reporting action and unclear offline/member guidance; the update addresses those usability defects. Physical-device acceptance remains pending. Automated SQLite/file reopen tests are not a substitute for the phone’s camera, GPS, kill/relaunch and Cloud/browser rehearsal. A genuine demo video will be linked after that rehearsal; no completed showcase or competition submission is claimed yet.
 
@@ -88,7 +90,7 @@ Use a reachable development host instead of `localhost` on a physical phone. Rel
 
 ### Report your first incident
 
-After signing in and joining/creating a workspace, tap **Report incident**. Choose the type, severity and description → **Continue** → use GPS or enter coordinates, add a photo → **Continue** → review → save/report. With no connection, the native app confirms a local save; do not wait for a photo upload. An administrator can report too, without adding another account first.
+After signing in and joining/creating a workspace, tap **Report incident**. Enter the title, type, severity and description → **Continue** → use GPS or enter coordinates, add a photo → **Continue** → review → **Save incident**. With no connection, the native app confirms a local save; do not wait for a photo upload. An administrator can report too, without adding another account first.
 
 To find it again on an administrator/coordinator phone, open the menu → **Saved reports & sync**, or tap the connection indicator. Field-worker Home/Incidents also show local reports. Restore Wi-Fi/mobile data, return to the app or tap **Check connection**; report metadata and photos synchronize separately. The command-center incident list shows server reports, so an unsynchronized offline report belongs in the device's saved reports until it reaches the backend.
 
